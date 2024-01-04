@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <stdlib.h>
 #include <Shlobj.h>
+#include <string>
 
 // for warning C4091: 'static'
 #pragma warning(disable:4091)
@@ -46,6 +47,13 @@ namespace System
 		/// </summary>
 		/// <param name="value">The value to write.</param>
 		static void WriteLine(const wchar_t* value);
+
+		/// <summary>
+		/// Reads the next line of characters from the standard input stream.
+		/// </summary>
+		/// <returns>The next line of characters from the input stream, or null if no more lines are
+		/// <para>available.</para></returns>
+		static std::wstring ReadLine();
 	};
 
 	/// <summary>
@@ -236,15 +244,6 @@ namespace System
 		}
 	};
 
-	static class GC
-	{
-	public:
-		static void Collect(LPVOID co)
-		{
-			CoTaskMemFree(co);
-		}
-	};
-
 	void Console::Write(const char* value)
 	{
 		std::cout << value;
@@ -271,6 +270,23 @@ namespace System
 		HANDLE hc = GetStdHandle(STD_OUTPUT_HANDLE);
 		WriteConsoleW(hc, value, static_cast<DWORD>(wcslen(value)), NULL, NULL);
 		WriteLine();
+	}
+
+	std::wstring Console::ReadLine()
+	{
+		std::wstring input;
+		WCHAR buffer[256];
+		DWORD bytesRead;
+		if (ReadConsole(GetStdHandle(STD_INPUT_HANDLE), buffer, sizeof(buffer) / sizeof(buffer[0]), &bytesRead, NULL))
+		{
+			buffer[bytesRead - 1] = L'\0';
+			input = buffer;
+		}
+		else
+		{
+			std::wcerr << L"Error reading from console." << std::endl;
+		}
+		return input;
 	}
 
 	/// <summary>
