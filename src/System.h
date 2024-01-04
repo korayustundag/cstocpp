@@ -10,8 +10,9 @@
 
 namespace System
 {
-#define NewLine "\r\n"
-
+	/// <summary>
+	/// Represents the standard input, output, and error streams for console applications.
+	/// </summary>
 	static class Console
 	{
 	public:
@@ -19,55 +20,47 @@ namespace System
 		/// Writes the specified string value to the standard output stream.
 		/// </summary>
 		/// <param name="value">The value to write.</param>
-		static void Write(const char* value)
-		{
-			std::cout << value;
-		}
+		static void Write(const char* value);
 
 		/// <summary>
 		/// Writes the specified string value to the standard output stream.
 		/// </summary>
 		/// <param name="value">The value to write.</param>
-		static void Write(const wchar_t* value)
-		{
-			HANDLE hc = GetStdHandle(STD_OUTPUT_HANDLE);
-			WriteConsoleW(hc, value, static_cast<DWORD>(wcslen(value)), NULL, NULL);
-		}
+		static void Write(const wchar_t* value);
 
 		/// <summary>
 		/// Writes the current line terminator to the standard output stream.
 		/// </summary>
-		static void WriteLine()
-		{
-			std::cout << NewLine;
-		}
+		static void WriteLine();
 
 		/// <summary>
 		/// Writes the specified string value, followed by the current line terminator, to
 		/// <para>the standard output stream.</para>
 		/// </summary>
 		/// <param name="value">The value to write.</param>
-		static void WriteLine(const char* value)
-		{
-			std::cout << value << NewLine;
-		}
+		static void WriteLine(const char* value);
 
 		/// <summary>
 		/// Writes the specified string value, followed by the current line terminator, to
 		/// <para>the standard output stream.</para>
 		/// </summary>
 		/// <param name="value">The value to write.</param>
-		static void WriteLine(const wchar_t* value)
-		{
-			HANDLE hc = GetStdHandle(STD_OUTPUT_HANDLE);
-			WriteConsoleW(hc, value, static_cast<DWORD>(wcslen(value)), NULL, NULL);
-			WriteLine();
-		}
+		static void WriteLine(const wchar_t* value);
 	};
 
+	/// <summary>
+	/// Provides information about, and means to manipulate, the current environment
+	/// <para>and platform.</para>
+	/// </summary>
 	static class Environment
 	{
 	public:
+
+		/// <summary>
+		/// Gets the newline wchar_t* defined for this environment.
+		/// <para>A wchar_t* containing "\r\n" for non-Unix platforms</para>
+		/// </summary>
+		static const wchar_t* NewLine;
 
 		/// <summary>
 		/// Specifies enumerated constants used to retrieve directory paths to system special folders.
@@ -191,47 +184,19 @@ namespace System
 		/// Terminates this process and returns an exit code to the operating system.
 		/// </summary>
 		/// <param name="code">The exit code to return to the operating system. Use 0 (zero) to indicate that<para>the process completed successfully.</para></param>
-		static void Exit(int code)
-		{
-			Console::Write("Press [enter] to exit...");
-			std::cin.get();
-			exit(code);
-		}
+		static void Exit(int code);
 
 		/// <summary>
 		/// Determines whether the current operating system is a 64-bit operating system.
 		/// </summary>
 		/// <returns>true if the operating system is 64-bit; otherwise, false.</returns>
-		static bool Is64BitOperatingSystem()
-		{
-			BOOL is64Bit = FALSE;
-			if (IsWow64Process(GetCurrentProcess(), &is64Bit) && is64Bit)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
+		static bool Is64BitOperatingSystem();
 
 		/// <summary>
 		/// Determines whether the current process is a 64-bit process.
 		/// </summary>
 		/// <returns>true if the process is 64-bit; otherwise, false.</returns>
-		static bool Is64BitProcess()
-		{
-			SYSTEM_INFO systemInfo;
-			GetNativeSystemInfo(&systemInfo);
-			if (systemInfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64 || systemInfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
+		static bool Is64BitProcess();
 
 
 		/// <summary>
@@ -243,81 +208,7 @@ namespace System
 		/// <para>The path to the specified system special folder, if that folder physically exists on your computer; otherwise, an empty const wchar_t* ("").</para>
 		/// <para>A folder will not physically exist if the operating system did not create it, the existing folder was deleted, or the folder is a virtual directory, such as My Computer, which does not correspond to a physical path.</para>
 		/// </returns>
-		static const wchar_t* GetFolderPath(SpecialFolder folder)
-		{
-			switch (folder)
-			{
-			case Environment::AdminTools:
-				return GetFolder(Environment::AdminTools);
-				break;
-			case Environment::ApplicationData:
-				return GetFolder(Environment::ApplicationData);
-				break;
-			case Environment::CommonAdminTools:
-				return GetFolder(Environment::CommonAdminTools);
-				break;
-			case Environment::CommonApplicationData:
-				return GetFolder(Environment::CommonApplicationData);
-				break;
-			case Environment::CommonDesktopDirectory:
-				return GetFolder(Environment::CommonDesktopDirectory);
-				break;
-			case Environment::CommonDocuments:
-				return GetFolder(Environment::CommonDocuments);
-				break;
-			case Environment::CommonMusic:
-				return GetFolder(Environment::CommonMusic);
-				break;
-			case Environment::CommonPictures:
-				return GetFolder(Environment::CommonPictures);
-				break;
-			case Environment::CommonProgramFiles:
-				return GetFolder(Environment::CommonProgramFiles);
-				break;
-			case Environment::CommonProgramFilesX86:
-				return GetFolder(Environment::CommonProgramFilesX86);
-				break;
-			case Environment::Desktop:
-				return GetFolder(Environment::Desktop);
-				break;
-			case Environment::DesktopDirectory:
-				return GetFolder(Environment::DesktopDirectory);
-				break;
-			case Environment::LocalApplicationData:
-				return GetFolder(Environment::LocalApplicationData);
-				break;
-			case Environment::MyDocuments:
-				return GetFolder(Environment::MyDocuments);
-				break;
-			case Environment::MyMusic:
-				return GetFolder(Environment::MyMusic);
-				break;
-			case Environment::MyPictures:
-				return GetFolder(Environment::MyPictures);
-				break;
-			case Environment::MyVideos:
-				return GetFolder(Environment::MyVideos);
-				break;
-			case Environment::ProgramFiles:
-				return GetFolder(Environment::ProgramFiles);
-				break;
-			case Environment::ProgramFilesX86:
-				return GetFolder(Environment::ProgramFilesX86);
-				break;
-			case Environment::System:
-				return GetFolder(Environment::System);
-				break;
-			case Environment::SystemX86:
-				return GetFolder(Environment::SystemX86);
-				break;
-			case Environment::Windows:
-				return GetFolderWin();
-				break;
-			default:
-				return L"";
-				break;
-			}
-		}
+		static const wchar_t* GetFolderPath(SpecialFolder folder);
 
 	private:
 		static const wchar_t* GetFolder(int cc)
@@ -344,4 +235,157 @@ namespace System
 			return dir;
 		}
 	};
+
+	static class GC
+	{
+	public:
+		static void Collect(LPVOID co)
+		{
+			CoTaskMemFree(co);
+		}
+	};
+
+	void Console::Write(const char* value)
+	{
+		std::cout << value;
+	}
+
+	void Console::Write(const wchar_t* value)
+	{
+		HANDLE hc = GetStdHandle(STD_OUTPUT_HANDLE);
+		WriteConsoleW(hc, value, static_cast<DWORD>(wcslen(value)), NULL, NULL);
+	}
+
+	void Console::WriteLine()
+	{
+		std::wcout << L"\r\n";
+	}
+
+	void Console::WriteLine(const char* value)
+	{
+		std::cout << value << "\r\n";
+	}
+
+	void Console::WriteLine(const wchar_t* value)
+	{
+		HANDLE hc = GetStdHandle(STD_OUTPUT_HANDLE);
+		WriteConsoleW(hc, value, static_cast<DWORD>(wcslen(value)), NULL, NULL);
+		WriteLine();
+	}
+
+	/// <summary>
+	/// Gets the newline wchar_t* defined for this environment.
+	/// <para>A wchar_t* containing "\r\n" for non-Unix platforms</para>
+	/// </summary>
+	const wchar_t* Environment::NewLine = L"\r\n";
+
+	void Environment::Exit(int code)
+	{
+		Console::Write("Press [enter] to exit...");
+		std::cin.get();
+		exit(code);
+	}
+
+	bool Environment::Is64BitOperatingSystem()
+	{
+		BOOL is64Bit = FALSE;
+		if (IsWow64Process(GetCurrentProcess(), &is64Bit) && is64Bit)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	bool Environment::Is64BitProcess()
+	{
+		SYSTEM_INFO systemInfo;
+		GetNativeSystemInfo(&systemInfo);
+		if (systemInfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64 || systemInfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	const wchar_t* Environment::GetFolderPath(SpecialFolder folder)
+	{
+		switch (folder)
+		{
+		case Environment::AdminTools:
+			return GetFolder(Environment::AdminTools);
+			break;
+		case Environment::ApplicationData:
+			return GetFolder(Environment::ApplicationData);
+			break;
+		case Environment::CommonAdminTools:
+			return GetFolder(Environment::CommonAdminTools);
+			break;
+		case Environment::CommonApplicationData:
+			return GetFolder(Environment::CommonApplicationData);
+			break;
+		case Environment::CommonDesktopDirectory:
+			return GetFolder(Environment::CommonDesktopDirectory);
+			break;
+		case Environment::CommonDocuments:
+			return GetFolder(Environment::CommonDocuments);
+			break;
+		case Environment::CommonMusic:
+			return GetFolder(Environment::CommonMusic);
+			break;
+		case Environment::CommonPictures:
+			return GetFolder(Environment::CommonPictures);
+			break;
+		case Environment::CommonProgramFiles:
+			return GetFolder(Environment::CommonProgramFiles);
+			break;
+		case Environment::CommonProgramFilesX86:
+			return GetFolder(Environment::CommonProgramFilesX86);
+			break;
+		case Environment::Desktop:
+			return GetFolder(Environment::Desktop);
+			break;
+		case Environment::DesktopDirectory:
+			return GetFolder(Environment::DesktopDirectory);
+			break;
+		case Environment::LocalApplicationData:
+			return GetFolder(Environment::LocalApplicationData);
+			break;
+		case Environment::MyDocuments:
+			return GetFolder(Environment::MyDocuments);
+			break;
+		case Environment::MyMusic:
+			return GetFolder(Environment::MyMusic);
+			break;
+		case Environment::MyPictures:
+			return GetFolder(Environment::MyPictures);
+			break;
+		case Environment::MyVideos:
+			return GetFolder(Environment::MyVideos);
+			break;
+		case Environment::ProgramFiles:
+			return GetFolder(Environment::ProgramFiles);
+			break;
+		case Environment::ProgramFilesX86:
+			return GetFolder(Environment::ProgramFilesX86);
+			break;
+		case Environment::System:
+			return GetFolder(Environment::System);
+			break;
+		case Environment::SystemX86:
+			return GetFolder(Environment::SystemX86);
+			break;
+		case Environment::Windows:
+			return GetFolderWin();
+			break;
+		default:
+			return L"";
+			break;
+		}
+	}
 }
